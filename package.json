@@ -8,6 +8,7 @@
     "mockDB": "ts-node ./test/lib/mockDatabase.ts",
     "test": "NODE_ENV=testing mocha -r ts-node/register test/*-test.ts --exit",
     "lint": "eslint --ext .ts ./src/ || exit 0",
+    "lint:fix": "eslint --fix --ext .ts ./src/ || exit 0",
     "docker-build": "docker build -t chralp/heyburrito . && docker tag chralp/heyburrito chralp/heyburrito",
     "docker-push": "docker push chralp/heyburrito"
   },
@@ -35,6 +36,7 @@
     "eslint": "^8.40.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.8.0",
+    "eslint-import-resolver-typescript": "^3.5.5",
     "eslint-plugin-prettier": "^4.2.1",
     "mocha": "^10.2.0",
     "mongodb-memory-server": "5.2.7",

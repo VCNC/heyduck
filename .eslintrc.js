@@ -10,6 +10,13 @@ module.exports = {
     node: true,
   },
   rules: {
+    'import/extensions': ['off'],
+    'no-underscore-dangle': ['off'],
     'no-tabs': ['error', { allowIndentationTabs: true }],
+  },
+  settings: {
+    'import/resolver': {
+      typescript: {},
+    },
   },
 };

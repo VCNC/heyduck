@@ -1,9 +1,15 @@
 module.exports = {
-    extends: ['airbnb-typescript/base'],
-    "rules": {
-        "max-len": ["warn", { "code": 140 }],
-        "quotes": [2, "single", { "avoidEscape": true }],
-        "@typescript-eslint/indent": ["error", 4],
-
-    }
+  root: true,
+  plugins: ['@typescript-eslint', 'prettier'],
+  extends: ['airbnb-base', 'plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended'],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    project: './tsconfig.json',
+  },
+  env: {
+    node: true,
+  },
+  rules: {
+    'no-tabs': ['error', { allowIndentationTabs: true }],
+  },
 };

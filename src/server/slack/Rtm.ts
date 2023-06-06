@@ -1,38 +1,18 @@
 import { EventEmitter } from 'events';
-
-interface SlackItem {
-  type: string;
-  channel?: string;
-  ts?: string;
-}
-
-interface SlackEvent {
-  type: string;
-  user: string;
-  text?: string;
-  reaction?: string;
-  item_user?: string;
-  client_msg_id?: string;
-  suppress_notification?: boolean;
-  team?: string;
-  channel?: string;
-  event_ts?: string;
-  ts?: string;
-  subtype?: string;
-  item?: SlackItem;
-}
+import { SlackEvent } from '../types/SlackRtm';
+import { RTMClient } from '@slack/rtm-api';
 
 class Rtm extends EventEmitter {
-  rtm: any;
+  rtm: RTMClient | undefined;
 
-  register(rtm: any) {
+  register(rtm: RTMClient) {
     this.rtm = rtm;
     this.listener();
   }
 
   listener(): void {
-    console.info('Listening on slack messages and reactions');
-    this.rtm.on('message', (event: SlackEvent) => {
+    console.log('Listening on slack messages and reactions');
+    this.rtm?.on('message', (event: SlackEvent) => {
       if (!!event.subtype && event.subtype === 'channel_join') {
         console.info('Joined channel', event.channel);
       }
@@ -40,7 +20,7 @@ class Rtm extends EventEmitter {
         this.emit('slackMessage', event);
       }
     });
-    this.rtm.on('reaction_added', (event: SlackEvent) => {
+    this.rtm?.on('reaction_added', (event: SlackEvent) => {
       if (event.type === 'reaction_added') {
         this.emit('slackReaction', event);
       }

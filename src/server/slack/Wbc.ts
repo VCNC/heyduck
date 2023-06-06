@@ -1,4 +1,6 @@
 import config from '../config';
+import { WebClient } from '@slack/web-api';
+import { Message } from '@slack/web-api/dist/response/ConversationsHistoryResponse';
 
 interface WbcParsed {
   id: string;
@@ -8,9 +10,9 @@ interface WbcParsed {
 }
 
 class Wbc {
-  wbc: any;
+  wbc: WebClient | undefined;
 
-  register(wbc: any) {
+  register(wbc: WebClient) {
     this.wbc = wbc;
   }
 
@@ -19,8 +21,8 @@ class Wbc {
     const bots: WbcParsed[] = [];
 
     console.info('Fetching slack users via wbc');
-    const result = await this.wbc.users.list();
-    result.members.forEach((x: any) => {
+    const result = await this.wbc!.users.list();
+    (result.members ?? []).forEach((x: any) => {
       // reassign correct array to arr
       const arr = x.is_bot ? bots : users;
       arr.push({
@@ -34,16 +36,20 @@ class Wbc {
   }
 
   async sendDM(username: string, text: string) {
-    const openConversation = await this.wbc.conversations.open({
+    const openConversation = await this.wbc!.conversations.open({
       users: username,
     });
 
     if (!openConversation.ok) {
-      console.warn(`Failed to open conversation with ${username}`);
+      console.warn(`Failed to open conversation with username: "${username}"`);
+      return;
+    }
+    if (openConversation.channel?.id === undefined) {
+      console.warn(`Failed to open conversation cause channel id is empty."`);
       return;
     }
 
-    const res = await this.wbc.chat.postMessage({
+    const res = await this.wbc!.chat.postMessage({
       text,
       channel: openConversation.channel.id,
       username: config.slack.bot_name,
@@ -55,16 +61,19 @@ class Wbc {
     }
   }
 
-  async fetchReactedMessage(channelId: string, ts: number) {
+  async fetchReactedMessage(
+    channelId: string,
+    timestamp: string,
+  ): Promise<Message | undefined> {
     console.info('Fetching reacted message via wbc');
-    const res = await this.wbc.conversations.history({
+    const res = await this.wbc!.conversations.history({
       channel: channelId,
-      latest: ts,
+      latest: timestamp,
       inclusive: true,
       limit: 1,
     });
 
-    return res.messages[0];
+    return (res.messages ?? [])[0];
   }
 }
 

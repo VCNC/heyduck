@@ -22,8 +22,8 @@ class MongoDBDriver {
   constructor(
     public MongoClient: any,
     public conf: any = {},
-    public client = null,
-    public db = null,
+    public client: any = null,
+    public db: any = null,
   ) {}
 
   async connect() {
@@ -44,7 +44,7 @@ class MongoDBDriver {
     }
   }
 
-  async store(collection: string, data: Object) {
+  async store(collection: string, data: any) {
     await this.connect();
     return this.db.collection(collection).insertOne(data);
   }
@@ -72,7 +72,7 @@ class MongoDBDriver {
    * @param { Object } query - searchObject to search for
    * @return { Find[] }
    */
-  async find(collection: string, query: Object): Promise<Find[]> {
+  async find(collection: string, query: any): Promise<Find[]> {
     await this.connect();
     return this.db.collection(collection).find(query).toArray();
   }
@@ -85,11 +85,11 @@ class MongoDBDriver {
    */
   async sum(
     collection: string,
-    match: Object = null,
+    match: any | null = null,
     listType: string,
   ): Promise<Sum[]> {
     await this.connect();
-    const aggregations: Array<Object> = [{ $match: { to: { $exists: true } } }];
+    const aggregations: Array<any> = [{ $match: { to: { $exists: true } } }];
     if (match) {
       aggregations.push({ $match: match });
     }
@@ -125,7 +125,7 @@ class MongoDBDriver {
 
     if (num) {
       const data = await this.sum('burritos', match, listType);
-      return data.length ? data[0].score : 0;
+      return data.length ? data[0]?.score : 0;
     }
     return this.find('burritos', match);
   }
@@ -135,7 +135,7 @@ class MongoDBDriver {
    * Should be able to return burrito List ( scoreType inc ) and
    * listtype ( dec ) AKA rottenburritoList
    */
-  async getScoreBoard({ user, listType, today }) {
+  async getScoreBoard({ user, listType, today }: any) {
     let match: any = {};
 
     if (user) {

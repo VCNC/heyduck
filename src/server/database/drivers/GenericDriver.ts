@@ -27,7 +27,7 @@ class GenericDriver extends Store implements Driver {
     super(driver);
   }
 
-  async give(to: string, from: string, date: any): Promise<any> {
+  async give(to: string, from: string, date: Date): Promise<any> {
     const score: Score = {
       _id: id(),
       to,
@@ -39,7 +39,7 @@ class GenericDriver extends Store implements Driver {
     return Promise.resolve(true);
   }
 
-  async takeAway(to: string, from: string, date: any): Promise<any> {
+  async takeAway(to: string, from: string, date: Date): Promise<any> {
     const score: Score = {
       _id: id(),
       to,
@@ -73,7 +73,7 @@ class GenericDriver extends Store implements Driver {
     this.syncData();
     const data: any = await this.getData();
     const filteredData = data
-      .filter((item) => {
+      .filter((item: any) => {
         if (
           item[listType] === user &&
           item.given_at.getTime() < time().end.getTime() &&
@@ -83,11 +83,11 @@ class GenericDriver extends Store implements Driver {
         }
         return undefined;
       })
-      .filter((y) => y);
+      .filter((y: any) => y);
     return filteredData;
   }
 
-  async getScoreBoard({ user, listType, today }): Promise<Sum[]> {
+  async getScoreBoard({ user, listType, today }: any): Promise<Sum[]> {
     this.syncData();
     const data: any = await this.getData();
 

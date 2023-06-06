@@ -54,7 +54,7 @@ function validMessage(message: any, emojis: any, allBots: any): boolean {
 
   if (txtContainsBot.length) {
     // Check if message.text contains registerd emoji to bot
-    const txtContainsEmoji = emojis.filter((e) => {
+    const txtContainsEmoji = emojis.filter((e: any) => {
       if (message.text.match(`${e.emoji}`)) return e;
       return undefined;
     });
@@ -71,7 +71,9 @@ function validReaction(reaction: any, emojis: any): boolean {
   if (reaction.item.channel === undefined) return false;
   if (reaction.item_user === undefined) return false;
   if (reaction.item.ts === undefined) return false;
-  return emojis.filter((e) => e.emoji == `:${reaction.reaction}:`).length > 0;
+  return (
+    emojis.filter((e: any) => e.emoji == `:${reaction.reaction}:`).length > 0
+  );
 }
 
 function validBotMention(message: any, botUserID: any) {

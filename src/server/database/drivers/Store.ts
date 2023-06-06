@@ -61,7 +61,7 @@ export default class Store {
     return true;
   }
 
-  async storeData(score) {
+  async storeData(score: any) {
     if (this.driver === 'array') {
       this.data.push(score);
       return true;

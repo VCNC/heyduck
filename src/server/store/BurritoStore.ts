@@ -124,7 +124,11 @@ class BurritoStore extends EventEmitter {
   /**
    * @param {string} user - userId
    */
-  async getUserScore(user: string, listType: string, num): Promise<number> {
+  async getUserScore(
+    user: string,
+    listType: string,
+    num: number,
+  ): Promise<number> {
     return this.database.getScore(user, listType, num);
   }
 }

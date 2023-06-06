@@ -5,6 +5,7 @@ import { parseMessage, parseReactedMessage } from './lib/parseMessage';
 import { validBotMention, validMessage, validReaction } from './lib/validator';
 import Rtm from './slack/Rtm';
 import Wbc from './slack/Wbc';
+import { SlackEvent, Emojis, Updates } from '~/server/types/SlackRtm';
 
 const {
   enableDecrement,
@@ -15,15 +16,6 @@ const {
   disableEmojiDec,
 } = config.slack;
 
-interface Emojis {
-  type: string;
-  emoji: string;
-}
-
-interface Updates {
-  username: string;
-  type: string;
-}
 const emojis: Array<Emojis> = [];
 
 const incEmojis = emojiInc.split(',').map((emoji) => emoji.trim());
@@ -119,30 +111,41 @@ const handleBurritos = async (
 };
 
 const start = () => {
-  Rtm.on('slackMessage', async (event: any) => {
+  Rtm.on('slackMessage', async (event: SlackEvent) => {
     if (validMessage(event, emojis, LocalStore.getAllBots())) {
       if (validBotMention(event, LocalStore.botUserID())) {
         // Geather data and send back to user
       } else {
         const result = parseMessage(event, emojis);
+        const channelId = event.channel;
+        if (channelId === undefined) {
+          return;
+        }
         if (result) {
           const { giver, updates } = result;
           if (updates.length) {
-            await handleBurritos(giver, event.channel, updates);
+            await handleBurritos(giver, channelId, updates);
           }
         }
       }
     }
   });
 
-  Rtm.on('slackReaction', async (event: any) => {
+  Rtm.on('slackReaction', async (event: SlackEvent) => {
     if (validReaction(event, emojis)) {
-      const channelId = event.item.channel;
+      const channelId = event.item?.channel;
+      const timestamp = event.item?.ts;
+      if (channelId === undefined || timestamp === undefined) {
+        return;
+      }
       const originalContent = await Wbc.fetchReactedMessage(
         channelId,
-        event.item.ts,
+        timestamp,
       );
-      const { updates } = parseReactedMessage(event, originalContent, emojis);
+      if (originalContent === undefined) {
+        return;
+      }
+      const updates = parseReactedMessage(event, originalContent, emojis);
       if (updates.length) {
         await handleBurritos(event.user, channelId, updates);
       }

@@ -1,8 +1,3 @@
-/* eslint-disable import/no-duplicates */
-import dotenv from 'dotenv';
-/* eslint-disable import/first */
-dotenv.config();
-import log from 'bog';
 import http from 'http';
 import BurritoStore from './store/BurritoStore';
 import LocalStore from './store/LocalStore';
@@ -12,11 +7,7 @@ import { start } from './bot';
 import slack from './slack';
 import RTMHandler from './slack/Rtm';
 import WBCHandler from './slack/Wbc';
-import APIHandler from './api';
-import WEBHandler from './web';
-import WSSHandler from './wss';
 import boot from './lib/boot';
-/* eslint-enable import/no-duplicates */
 
 const init = async () => {
   await boot();
@@ -48,16 +39,16 @@ init().then(() => {
     request: http.IncomingMessage,
     response: http.ServerResponse,
   ) => {
-    /**
-     * Check if request url contains api path, then let APIHandler take care of it
-     */
-    if (request.url.includes(config.http.api_path))
-      return APIHandler(request, response);
-    /**
-     * Check if request url contains webpath, then let WEBHandler take care of it
-     */
-    if (request.url.includes(config.http.web_path))
-      return WEBHandler(request, response);
+    // /**
+    //  * Check if request url contains api path, then let APIHandler take care of it
+    //  */
+    // if (request.url.includes(config.http.api_path))
+    //   return APIHandler(request, response);
+    // /**
+    //  * Check if request url contains webpath, then let WEBHandler take care of it
+    //  */
+    // if (request.url.includes(config.http.web_path))
+    //   return WEBHandler(request, response);
     /**
      * redirect all other requests to webPath
      */
@@ -72,10 +63,9 @@ init().then(() => {
    */
   const httpserver = http.createServer(requestHandler);
 
-  httpserver.listen(config.http.http_port, (err) => {
-    if (err) throw new Error(`Could not start HTTP server, error => ${err}`);
-    // Start WSS instance
-    WSSHandler();
-    console.info(`HttpServer started on ${config.http.http_port}`);
-  });
+  // httpserver.listen(config.http.http_port, (err) => {
+  //   if (err) throw new Error(`Could not start HTTP server, error => ${err}`);
+  //   // Start WSS instance
+  //   console.info(`HttpServer started on ${config.http.http_port}`);
+  // });
 });

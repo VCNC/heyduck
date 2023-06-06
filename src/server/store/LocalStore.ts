@@ -2,7 +2,7 @@ import config from '../config';
 import WBCHandler from '../slack/Wbc';
 
 class LocalStore {
-  botId: string = null;
+  botId: string | null = null;
 
   storedBots: any;
 

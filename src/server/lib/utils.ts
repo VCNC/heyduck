@@ -19,17 +19,19 @@ const time = () => {
 
 const sort = (input: UserInterface[], sortType = 'desc'): UserInterface[] => {
   const sorted = input.sort((a, b) => {
-    if (a.score) {
-      if (sortType === 'desc') return b.score - a.score;
-      return a.score - b.score;
+    const aScore = a.score ?? 0;
+    const aScoreInc = a.scoreinc ?? 0;
+    const bScore = b.score ?? 0;
+    const bScoreInc = b.scoreinc ?? 0;
+    if (aScore) {
+      if (sortType === 'desc') return bScore - aScore;
+      return aScore - bScore;
     }
-    if (sortType === 'desc') return b.scoreinc - a.scoreinc;
-    return a.scoreinc - b.scoreinc;
+    if (sortType === 'desc') return bScoreInc - aScoreInc;
+    return aScoreInc - bScoreInc;
   });
   return sorted;
 };
-
-const env: string = process.env.NODE_ENV || 'development';
 
 const fixPath = (p: string): string => {
   if (!p.startsWith('/')) return `/${p}`;
@@ -37,7 +39,7 @@ const fixPath = (p: string): string => {
   return p;
 };
 
-const pathExists = (inPath: string) => {
+const pathExists = (inPath: string): boolean => {
   try {
     console.debug('Checking if path exists', inPath);
     return fs.lstatSync(inPath).isDirectory();
@@ -46,7 +48,7 @@ const pathExists = (inPath: string) => {
   }
 };
 
-const createPath = (inPath: string) => {
+const createPath = (inPath: string): boolean => {
   try {
     console.debug(`Trying to create path ${inPath}`);
     fs.mkdirSync(inPath);
@@ -59,10 +61,11 @@ const createPath = (inPath: string) => {
   }
 };
 
-const mustHave = (key: string) => {
-  if (env === 'development' || env === 'testing') return process.env[key];
+const mustHave = (key: string): string => {
+  if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test')
+    return process.env[key]!;
   if (!process.env[key]) throw new Error(`Missing ENV ${key}`);
-  return process.env[key];
+  return process.env[key]!;
 };
 
 const getThemeName = () => {
@@ -92,7 +95,6 @@ export {
   sort,
   mustHave,
   fixPath,
-  env,
   pathExists,
   createPath,
   themeRootPath,

@@ -1,21 +1,12 @@
 import config from '../config';
 import { pathExists, createPath } from './utils';
-import themeHandler from './themeHandler';
 
 export default async () => {
-  console.level(config.misc.log_level);
   console.debug('Loaded ENVs for boot:');
   console.debug('=====================');
   console.debug('db_driver:', config.db.db_driver);
-  console.debug('themeName', config.theme.themeName);
 
-  if (config.theme.path) {
-    console.debug('themePath:', config.theme.themePath);
-  } else {
-    console.debug('themeUrl:', config.theme.url);
-  }
   console.debug('=====================');
-  await themeHandler();
   // check if database is file
   if (config.db.db_driver === 'file') {
     console.info('Database driver is file');

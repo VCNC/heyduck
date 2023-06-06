@@ -35,9 +35,7 @@ const IndexPage: NextPageWithLayout = () => {
 
   return (
     <div className="flex flex-col bg-gray-800 py-8">
-      <h1 className="text-4xl font-bold">
-        Welcome to your tRPC with Prisma starter!
-      </h1>
+      <h1 className="text-4xl font-bold">Welcome to your tRPC!</h1>
       <p className="text-gray-400">
         If you get stuck, check{' '}
         <Link className="underline" href="https://trpc.io">

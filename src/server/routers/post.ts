@@ -3,23 +3,10 @@
  * This is an example router, you can delete this file and then update `../pages/api/trpc/[trpc].tsx`
  */
 import { router, publicProcedure } from '../trpc';
-import { Prisma } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { prisma } from '~/server/prisma';
 
-/**
- * Default selector for Post.
- * It's important to always explicitly say which fields you want to return in order to not leak extra information
- * @see https://github.com/prisma/prisma/issues/9353
- */
-const defaultPostSelect = Prisma.validator<Prisma.PostSelect>()({
-  id: true,
-  title: true,
-  text: true,
-  createdAt: true,
-  updatedAt: true,
-});
+const items: { id: string; title: string; text: string }[] = [];
 
 export const postRouter = router({
   list: publicProcedure
@@ -30,29 +17,9 @@ export const postRouter = router({
       }),
     )
     .query(async ({ input }) => {
-      /**
-       * For pagination docs you can have a look here
-       * @see https://trpc.io/docs/useInfiniteQuery
-       * @see https://www.prisma.io/docs/concepts/components/prisma-client/pagination
-       */
-
       const limit = input.limit ?? 50;
       const { cursor } = input;
 
-      const items = await prisma.post.findMany({
-        select: defaultPostSelect,
-        // get an extra item at the end which we'll use as next cursor
-        take: limit + 1,
-        where: {},
-        cursor: cursor
-          ? {
-              id: cursor,
-            }
-          : undefined,
-        orderBy: {
-          createdAt: 'desc',
-        },
-      });
       let nextCursor: typeof cursor | undefined = undefined;
       if (items.length > limit) {
         // Remove the last item and use it as next cursor
@@ -75,10 +42,7 @@ export const postRouter = router({
     )
     .query(async ({ input }) => {
       const { id } = input;
-      const post = await prisma.post.findUnique({
-        where: { id },
-        select: defaultPostSelect,
-      });
+      const post = items.find((item) => item.id === id);
       if (!post) {
         throw new TRPCError({
           code: 'NOT_FOUND',
@@ -96,10 +60,23 @@ export const postRouter = router({
       }),
     )
     .mutation(async ({ input }) => {
-      const post = await prisma.post.create({
-        data: input,
-        select: defaultPostSelect,
-      });
-      return post;
+      if (input.id === undefined) {
+        items.push({
+          id: Math.random().toString(36).substr(2, 9),
+          title: input.title,
+          text: input.text,
+        });
+      } else {
+        const editTarget = items.find((item) => item.id === input.id);
+        if (editTarget === undefined) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: `No post with id '${input.id}'`,
+          });
+        }
+        editTarget.title = input.title;
+        editTarget.text = input.text;
+      }
+      return input;
     }),
 });

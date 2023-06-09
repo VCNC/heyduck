@@ -14,3 +14,11 @@ export default {
   rtm: slackMock ? new RTMMock() : new RTMClient(config.slack.api_token),
   wbc: slackMock ? new WebMock() : new WebClient(config.slack.api_token),
 };
+
+const web = new WebClient(config.slack.api_token);
+
+{
+  async () => {
+    const apiClient = new WebClient(config.slack.api_token);
+  };
+}

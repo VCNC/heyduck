@@ -88,7 +88,15 @@ class Wbc {
       limit: 1,
     });
 
+    const res2 = await this.wbc.conversations.replies({
+      channel: channelId,
+      latest: ts,
+      inclusive: true,
+      limit: 1,
+    });
+
     log.info(res)
+    log.info(res2)
 
     return res.messages[0];
   }

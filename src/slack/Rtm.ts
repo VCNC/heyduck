@@ -41,7 +41,8 @@ class Rtm extends EventEmitter {
         this.emit('slackMessage', event);
       }
     });
-    this.rtm.on('reaction_added', (event: SlackEvent) => {
+    this.rtm.on('reaction_added', (event: any) => {
+      log.info(event)
       if (event.type === 'reaction_added') {
         this.emit('slackReaction', event);
       }

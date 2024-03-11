@@ -81,23 +81,14 @@ class Wbc {
 
   async fetchReactedMessage(channelId: string, ts: number) {
     log.info('Fetching reacted message via wbc');
-    const res = await this.wbc.conversations.history({
-      channel: channelId,
-      latest: ts,
-      inclusive: true,
-      limit: 1,
-    });
 
-    const res2 = await this.wbc.conversations.replies({
+    const res = await this.wbc.conversations.replies({
       channel: channelId,
       ts: ts,
       latest: ts,
       inclusive: true,
       limit: 1,
     });
-
-    log.info(res)
-    log.info(res2)
 
     return res.messages[0];
   }

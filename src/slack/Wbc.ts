@@ -90,6 +90,7 @@ class Wbc {
 
     const res2 = await this.wbc.conversations.replies({
       channel: channelId,
+      ts: ts,
       latest: ts,
       inclusive: true,
       limit: 1,

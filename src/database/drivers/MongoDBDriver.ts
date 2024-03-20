@@ -1,4 +1,4 @@
-import { time } from '../../lib/utils';
+import { today } from '../../lib/utils';
 
 const mongoConf = {
   useNewUrlParser: true,
@@ -96,8 +96,8 @@ class MongoDBDriver {
     return this.find('burritos', {
       [listType]: user,
       given_at: {
-        $gte: time().start,
-        $lt: time().end,
+        $gte: today().start,
+        $lt: today().end,
       },
     });
   }
@@ -130,7 +130,7 @@ class MongoDBDriver {
       match = listType === 'from' ? { to: user } : { from: user };
     }
     if (today) {
-      match.given_at = { $gte: time().start, $lt: time().end };
+      match.given_at = { $gte: today().start, $lt: today().end };
     }
     return this.find('burritos', match);
   }

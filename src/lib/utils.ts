@@ -7,7 +7,7 @@ const root: string = path.normalize(`${__dirname}/../../`);
 const themeRootPath = `${root}www/themes/`;
 const defaultTheme = 'https://github.com/chralp/heyburrito-theme';
 
-const time = () => {
+const today = () => {
   const start = new Date();
   const end = new Date();
   start.setHours(0, 0, 0, 0);
@@ -88,4 +88,4 @@ const getThemePath = () => {
   return `${themeRootPath}${themeName}/`;
 };
 
-export { time, sort, mustHave, fixPath, env, pathExists, createPath, themeRootPath, defaultTheme, root, getThemePath, getThemeName };
+export { today, sort, mustHave, fixPath, env, pathExists, createPath, themeRootPath, defaultTheme, root, getThemePath, getThemeName };

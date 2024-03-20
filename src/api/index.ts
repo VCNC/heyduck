@@ -1,6 +1,6 @@
 import log from 'bog';
 import Route from './Route';
-import { getScoreBoard, getUserStats, givenBurritosToday, getUserScore } from '../middleware';
+import { getScoreBoard, getMonthlyScoreBoard, getUserStats, givenBurritosToday, getUserScore } from '../middleware';
 import config from '../config';
 
 // Types
@@ -63,6 +63,9 @@ Route.add({
   },
 });
 
+/**
+ * Add route for total score board
+ */
 Route.add({
   method: 'GET',
   path: `${apiPath}scoreboard/{listType}/{scoreTypeInput}`,
@@ -87,6 +90,72 @@ Route.add({
       }
 
       const score = await getScoreBoard(listType, scoreType);
+
+      const data = {
+        error: false,
+        code: 200,
+        message: 'ok',
+        data: score,
+      };
+
+      return response(data, res);
+    } catch (err) {
+      log.warn(err);
+      return response(
+        {
+          error: true,
+          code: err.code || 500,
+          message: err.message,
+          data: null,
+        },
+        res,
+        err.code || 500,
+      );
+    }
+  },
+});
+
+/**
+ * Add route for monthly score board
+ */
+Route.add({
+  method: 'GET',
+  path: `${apiPath}scoreboard/{listType}/{scoreTypeInput}/{month}/{year}`,
+  handler: async (request: any, res: any) => {
+    try {
+      const { listType, scoreTypeInput, month, year } = request.params;
+
+      const scoreType = scoreTypeInput || 'inc';
+
+      if (!ALLOWED_LISTTYPES.includes(listType)) {
+        throw {
+          message: 'Allowed listType is to or from',
+          code: 400,
+        };
+      }
+
+      if (!ALLOWED_SCORETYPES.includes(scoreType)) {
+        throw {
+          message: 'Allowed scoreType is inc or dec',
+          code: 400,
+        };
+      }
+
+      if (month > 12 || month < 1) {
+        throw {
+          message: 'Month must be between 1 and 12',
+          code: 400,
+        };
+      }
+
+      if (year < 1970) {
+        throw {
+          message: 'Year must be greater than 1970',
+          code: 400,
+        };
+      }
+
+      const score = await getMonthlyScoreBoard(listType, scoreType, month, year);
 
       const data = {
         error: false,

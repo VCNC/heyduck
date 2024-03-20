@@ -1,7 +1,7 @@
 import Store from './Store';
 import Driver from './Driver';
 import Score from '../../types/Score.interface';
-import { time } from '../../lib/utils';
+import { today } from '../../lib/utils';
 
 function id() {
   // Cred => https://gist.github.com/gordonbrander/2230317
@@ -67,7 +67,11 @@ class GenericDriver extends Store implements Driver {
     const data: any = await this.getData();
     const filteredData = data
       .filter((item) => {
-        if (item[listType] === user && item.given_at.getTime() < time().end.getTime() && item.given_at.getTime() > time().start.getTime()) {
+        if (
+          item[listType] === user &&
+          item.given_at.getTime() < today().end.getTime() &&
+          item.given_at.getTime() > today().start.getTime()
+        ) {
           return item;
         }
         return undefined;
@@ -89,7 +93,7 @@ class GenericDriver extends Store implements Driver {
     const selected = data
       .filter((item: any) => {
         if (today) {
-          if (item.given_at.getTime() < time().end.getTime() && item.given_at.getTime() > time().start.getTime()) {
+          if (item.given_at.getTime() < today().end.getTime() && item.given_at.getTime() > today().start.getTime()) {
             if (user) {
               if (item[listTypeSwitch] === user) return item;
             } else {
@@ -100,6 +104,31 @@ class GenericDriver extends Store implements Driver {
           if (item[listTypeSwitch] === user) return item;
         } else {
           return item;
+        }
+        return undefined;
+      })
+      .filter((y: any) => y);
+    return selected;
+  }
+
+  async getMonthlyScoreBoard({ user, listType, month, year }): Promise<Sum[]> {
+    this.syncData();
+    const data: any = await this.getData();
+
+    let listTypeSwitch: string;
+    if (user) {
+      listTypeSwitch = listType === 'from' ? 'to' : 'from';
+    } else {
+      listTypeSwitch = listType;
+    }
+    const selected = data
+      .filter((item: any) => {
+        if (item.given_at.getMonth() === month && item.given_at.getFullYear() === year) {
+          if (user) {
+            if (item[listType] === user) return item;
+          } else {
+            return item;
+          }
         }
         return undefined;
       })

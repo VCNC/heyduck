@@ -58,6 +58,58 @@ const getScoreBoard = async (listType: string, scoreType: string) => {
   return sort(mapper(scoreList));
 };
 
+/**
+ * @param {string} scoretype - inc / dec
+ * @param {string} listType - to / from
+ * @param {number} month - Date().getMonth()
+ * @param {number} year - Date().getFullYear()
+ */
+const getMonthlyScoreBoard = async (listType: string, scoreType: string, month: number, year: number) => {
+  const data = await BurritoStore.getMonthlyScoreBoard({ listType, month, year });
+  const score = [];
+  const uniqueUsername = [...new Set(data.map((x) => x[listType]))];
+
+  const scoreTypeFilter = scoreType === 'inc' ? 1 : -1;
+  uniqueUsername.forEach((u) => {
+    const dataByUser = data.filter((e: any) => e[listType] === u);
+    let filteredData: any;
+    let countSwitch: any;
+
+    if (listType === 'to' && config.slack.enableDecrement && scoreType === 'inc') {
+      filteredData = dataByUser;
+    } else {
+      filteredData = dataByUser.filter((e: any) => e.value === scoreTypeFilter);
+      countSwitch = 1;
+    }
+    const red = filteredData.reduce((a: number, item) => a + (countSwitch || item.value), 0);
+    score.push({ _id: u, score: red });
+  });
+
+  const scoreList = score
+    .map((x) => {
+      if (x.score !== 0) return x;
+      return undefined;
+    })
+    .filter((y) => y);
+
+  if (enableLevel) {
+    const levelScoreList = scoreList.map((x) => {
+      const { score } = x;
+      const roundedScore = Math.floor(score / scoreRotation) * scoreRotation;
+      const level = Math.floor((score - 1) / scoreRotation);
+      const newScore = score - roundedScore === 0 ? roundedScore - (score - scoreRotation) : score - roundedScore;
+      return {
+        _id: x._id,
+        score: newScore,
+        level,
+      };
+    });
+    return sort(mapper(levelScoreList));
+  }
+
+  return sort(mapper(scoreList));
+};
+
 const _getUserScoreBoard = async ({ ...args }) => {
   const { listType } = args;
   const data: any = await BurritoStore.getScoreBoard({ ...args });
@@ -150,4 +202,4 @@ const getUserScore = async (user: string, listType: string, scoreType: string) =
   };
 };
 
-export { getScoreBoard, getUserStats, givenBurritosToday, getUserScore };
+export { getScoreBoard, getMonthlyScoreBoard, getUserStats, givenBurritosToday, getUserScore };

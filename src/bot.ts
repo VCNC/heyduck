@@ -92,6 +92,8 @@ const handleBurritos = async (giver: string, channel: string, duckedMessage: str
   const leftOverDucks = dailyCap - givenDucks;
   const receivers = [...new Set(updates.map((it) => it.username))];
   const eachGivenDucks = Math.ceil(updates.length / receivers.length);
+  const firstLineContent = duckedMessage.split('\n')[0] ?? ""
+  const trailingDots = duckedMessage.split('\n').length > 1 ? "..." : "" 
   notifyUser(
     giver,
     `${receivers
@@ -118,7 +120,7 @@ const handleBurritos = async (giver: string, channel: string, duckedMessage: str
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `> ${duckedMessage.split('\n')[0] ?? ""}...`,
+          text: `> ${firstLineContent}${trailingDots}`,
         },
       },
       {

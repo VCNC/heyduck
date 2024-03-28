@@ -49,7 +49,7 @@ const notifyUser = (user: string, message: string, messageBlock?: Object[]) => {
   }
 };
 
-const handleBurritos = async (giver: string, channel: string, duckedMessage: string, updates: Updates[]) => {
+const handleBurritos = async (giver: string, channel: string, duckedMessage: string, duckedMessageLink: string, updates: Updates[]) => {
   log.info(updates)
   if (!enableDecrement) {
     const burritos = await BurritoStore.givenBurritosToday(giver, 'from');
@@ -92,6 +92,8 @@ const handleBurritos = async (giver: string, channel: string, duckedMessage: str
   const leftOverDucks = dailyCap - givenDucks;
   const receivers = [...new Set(updates.map((it) => it.username))];
   const eachGivenDucks = Math.ceil(updates.length / receivers.length);
+  const firstLineContent = duckedMessage.split('\n')[0] ?? ""
+  const trailingDots = duckedMessage.split('\n').length > 1 ? "..." : "" 
   notifyUser(
     giver,
     `${receivers
@@ -111,7 +113,14 @@ const handleBurritos = async (giver: string, channel: string, duckedMessage: str
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `> ${duckedMessage}`,
+          text: `<${duckedMessageLink}|내가 덕 받은 메세지 링크>`,
+        },
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `> ${firstLineContent}${trailingDots}`,
         },
       },
       {
@@ -136,7 +145,8 @@ const start = () => {
         if (result) {
           const { giver, updates } = result;
           if (updates.length) {
-            await handleBurritos(giver, event.channel, event.text, updates);
+            const messageLink = await Wbc.fetchMessageLink(event.channel, event.event_ts)
+            await handleBurritos(giver, event.channel, event.text, messageLink, updates);
           }
         }
       }
@@ -147,9 +157,10 @@ const start = () => {
     if (validReaction(event, emojis)) {
       const channelId = event.item.channel;
       const originalContent = await Wbc.fetchReactedMessage(channelId, event.item.ts);
+      const messageLink = await Wbc.fetchMessageLink(channelId, event.item.ts)
       const { updates } = parseReactedMessage(event, originalContent, emojis);
       if (updates.length) {
-        await handleBurritos(event.user, channelId, originalContent.text, updates);
+        await handleBurritos(event.user, channelId, originalContent.text, messageLink,updates);
       }
     }
   });

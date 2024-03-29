@@ -17,6 +17,7 @@ interface Emojis {
 interface Updates {
   username: string;
   type: string;
+  reaction: string;
 }
 const emojis: Array<Emojis> = [];
 const dashBoardUrl = 'http://ec2-43-201-180-152.ap-northeast-2.compute.amazonaws.com:3333/'
@@ -51,11 +52,17 @@ const notifyUser = (user: string, message: string, messageBlock?: Object[]) => {
 
 const handleBurritos = async (giver: string, channel: string, duckedMessage: string, duckedMessageLink: string, updates: Updates[]) => {
   log.info(updates)
+  const isHoisung = updates.some((value) => { value.reaction.includes("hoisung")})
   if (!enableDecrement) {
     const burritos = await BurritoStore.givenBurritosToday(giver, 'from');
     const diff = dailyCap - burritos;
     if (updates.length > diff) {
-      notifyUser(giver, `${updates.length} 개의 :duck:을 주는데 실패했습니다. 오늘 줄 수 :duck:의 개수는 ${diff}개 입니다.`);
+      if(isHoisung) {
+        notifyUser(giver, `${updates.length} 개의 :1hoisung:을 주는데 실패했습니다. 오늘 줄 수 :1hoisung:의 개수는 ${diff}개 입니다.`);
+      } else {
+        notifyUser(giver, `${updates.length} 개의 :duck:을 주는데 실패했습니다. 오늘 줄 수 :duck:의 개수는 ${diff}개 입니다.`);
+      }
+      
       return false;
     }
     if (burritos >= dailyCap) {
@@ -71,7 +78,11 @@ const handleBurritos = async (giver: string, channel: string, duckedMessage: str
     const diffDec = dailyDecCap - givenRottenBurritos;
     if (incUpdates.length) {
       if (incUpdates.length > diffInc) {
-        notifyUser(giver, `${updates.length} 개의 :duck:을 주는데 실패했습니다. 오늘 줄 수 :duck:의 개수는 ${diffInc}개 입니다.`);
+        if(isHoisung) {
+          notifyUser(giver, `${updates.length} 개의 :1hoisung:을 주는데 실패했습니다. 오늘 줄 수 :1hoisung:의 개수는 ${diffInc}개 입니다.`);
+        } else {
+          notifyUser(giver, `${updates.length} 개의 :duck:을 주는데 실패했습니다. 오늘 줄 수 :duck:의 개수는 ${diffInc}개 입니다.`);
+        }
       } else {
         await giveBurritos(giver, incUpdates);
       }
@@ -94,26 +105,37 @@ const handleBurritos = async (giver: string, channel: string, duckedMessage: str
   const eachGivenDucks = Math.ceil(updates.length / receivers.length);
   const firstLineContent = duckedMessage.split('\n')[0] ?? ""
   const trailingDots = duckedMessage.split('\n').length > 1 ? "..." : "" 
-  notifyUser(
-    giver,
-    `${receivers
-      .map((it) => `<@${it}>`)
-      .join(' ')}에게 ${eachGivenDucks}개의 :duck:을 주었습니다. 오늘 ${leftOverDucks}개의 :duck:을 더 줄 수 있습니다.`,
-  );
+  if (isHoisung) {
+    notifyUser(
+      giver,
+      `${receivers
+        .map((it) => `<@${it}>`)
+        .join(' ')}에게 ${eachGivenDucks}개의 :1hoisung:을 주었습니다. 오늘 ${leftOverDucks}개의 :1hoisung:을 더 줄 수 있습니다.`,
+    );
+  } else {
+    notifyUser(
+      giver,
+      `${receivers
+        .map((it) => `<@${it}>`)
+        .join(' ')}에게 ${eachGivenDucks}개의 :duck:을 주었습니다. 오늘 ${leftOverDucks}개의 :duck:을 더 줄 수 있습니다.`,
+    );
+  }
+  
   receivers.forEach((receiver) => {
     notifyUser(receiver, `<@${giver}>님이 <#${channel}>에서 1개의 :duck:을 주었습니다.`, [
       {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `<@${giver}>님이 <#${channel}>에서 ${eachGivenDucks}개의 :duck:을 주었습니다.`,
+          text: isHoisung ? `<@${giver}>: 1 회성 드립니다.` 
+          : `<@${giver}>님이 <#${channel}>에서 ${eachGivenDucks}개의 :duck:을 주었습니다.`,
         },
       },
       {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `<${duckedMessageLink}|내가 덕 받은 메세지 링크>`,
+          text: isHoisung ? `<${duckedMessageLink}|내가 1 회성 받은 메세지 링크>` : `<${duckedMessageLink}|내가 덕 받은 메세지 링크>`,
         },
       },
       {
@@ -127,7 +149,8 @@ const handleBurritos = async (giver: string, channel: string, duckedMessage: str
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `<${dashBoardUrl}|헤이덕 대시보드>에서 내가 받은 :duck: 수를 확인해보세요!`,
+          text: isHoisung ? `<${dashBoardUrl}|헤이덕 대시보드>에서 내가 받은 :1hoisung: 수를 확인해보세요!` : 
+          `<${dashBoardUrl}|헤이덕 대시보드>에서 내가 받은 :duck: 수를 확인해보세요!`,
         },
       },
     ]);

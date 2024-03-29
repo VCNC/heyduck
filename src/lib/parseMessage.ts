@@ -53,7 +53,7 @@ function parseMessage(msg, emojis) {
   if (hits.length === 0) return false;
 
   // For each emojiHits give each user a update
-  hits.map((x) => users.forEach((u) => updates.push({ username: u, type: x.type })));
+  hits.map((x) => users.forEach((u) => updates.push({ username: u, type: x.type, reaction: x.emoji })));
 
   return {
     updates,
@@ -95,7 +95,7 @@ function parseReactedMessage(reaction, reactedMsg, emojis) {
   const type = emojis.filter((e: any) => e.emoji == `:${reaction.reaction}:`)[0].type;
 
   // Give each user a update
-  filteredUsers.forEach((u) => updates.push({ username: u, type: type }));
+  filteredUsers.forEach((u) => updates.push({ username: u, type: type, reaction: reaction.reaction }));
 
   return {
     updates,

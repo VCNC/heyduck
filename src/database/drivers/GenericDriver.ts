@@ -80,7 +80,7 @@ class GenericDriver extends Store implements Driver {
     return filteredData;
   }
 
-  async getScoreBoard({ user, listType, today }): Promise<Sum[]> {
+  async getScoreBoard({ user, listType, isToday }): Promise<Sum[]> {
     this.syncData();
     const data: any = await this.getData();
 
@@ -92,7 +92,7 @@ class GenericDriver extends Store implements Driver {
     }
     const selected = data
       .filter((item: any) => {
-        if (today) {
+        if (isToday) {
           if (item.given_at.getTime() < today().end.getTime() && item.given_at.getTime() > today().start.getTime()) {
             if (user) {
               if (item[listTypeSwitch] === user) return item;

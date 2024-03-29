@@ -434,3 +434,9 @@ h1 {
     overflow-x: scroll;
   }
 }
+
+#month-picker {
+  display: flex;
+  justify-content: center;
+  margin: 60px 0;
+}

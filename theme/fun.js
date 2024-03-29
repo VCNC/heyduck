@@ -1,3 +1,7 @@
+import AirDatepicker from 'air-datepicker';
+import 'air-datepicker/air-datepicker.css';
+import localeKo from 'air-datepicker/locale/ko';
+
 const users = document.getElementById('users');
 const filter = document.getElementById('filter');
 let store = [];
@@ -15,28 +19,49 @@ const burritoHost = window.location.hostname;
 let listType = getLocalStorage('listType') || 'to';
 let scoreType = getLocalStorage('scoreType') || 'inc';
 
+new AirDatepicker('#month-picker', {
+  locale: localeKo,
+  view: 'months',
+  minView: 'months',
+  dateFormat: 'MMMM yyyy',
+  onSelect: ({ date }) => {
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    console.log({ month, year });
+    fetcher('monthlyScore', { listType, scoreType, month, year }).then((response) => {
+      console.log(response);
+      store = response;
+      render();
+    });
+  },
+});
+
 const filterSwitch = document.getElementById('switchToFromInput');
 
 filterSwitch.checked = listType === 'to' ? true : false;
 
-async function fetcher(type, { username, listType, scoreType }) {
+async function fetcher(type, { username, listType, scoreType, month, year }) {
   switch (type) {
-    case 'scoreboard':
+    case 'scoreboard': {
       const res = await fetch(`/api/scoreboard/${listType}/${scoreType}`);
       const json = await res.json();
       return json.data;
-      break;
-    case 'userStats':
-      const res1 = await fetch(`/api/userstats/${username}`);
-      const json1 = await res1.json();
-      return json1.data;
-      break;
-    case 'userScore':
-      const res2 = await fetch(`/api/userscore/${username}/${listType}/${scoreType}`);
-      const json2 = await res2.json();
-      const { data } = json2;
-      return json2;
-      break;
+    }
+    case 'userStats': {
+      const res = await fetch(`/api/userstats/${username}`);
+      const json = await res.json();
+      return json.data;
+    }
+    case 'userScore': {
+      const res = await fetch(`/api/userscore/${username}/${listType}/${scoreType}`);
+      const json = await res.json();
+      return json;
+    }
+    case 'monthlyScore': {
+      const res = await fetch(`/api/monthlyscore/${listType}/${scoreType}/${month}/${year}`);
+      const json = await res.json();
+      return json.data;
+    }
   }
 }
 

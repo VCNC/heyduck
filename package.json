@@ -6,6 +6,7 @@
   "scripts": {
     "start": "NODE_ENV=production ts-node ./src/server.ts",
     "dev": "NODE_ENV=development nodemon --ignore '/test/*.ts' --watch '*.ts' --exec 'ts-node' ./src/server.ts",
+    "dev:front": "rollup -c -w",
     "mockDB": "ts-node ./test/lib/mockDatabase.ts",
     "test": "NODE_ENV=testing mocha -r ts-node/register test/*-test.ts --exit",
     "lint": "eslint --ext .ts ./src/ || exit 0",

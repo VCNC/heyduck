@@ -74,6 +74,10 @@ class BurritoStore extends EventEmitter {
     return this.database.getScoreBoard({ ...args });
   }
 
+  async getMonthlyScoreBoard({ ...args }): Promise<DatabasePost[]> {
+    return this.database.getMonthlyScoreBoard({ ...args });
+  }
+
   /**
    * @param {string} user - userId
    * @param {string} listType - to / from defaults from

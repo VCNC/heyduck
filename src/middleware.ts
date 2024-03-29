@@ -136,8 +136,8 @@ const getUserStats = async (user: string) => {
     BurritoStore.getUserStats(user),
     _getUserScoreBoard({ user, listType: 'to' }),
     _getUserScoreBoard({ user, listType: 'from' }),
-    _getUserScoreBoard({ user, listType: 'to', today: true }),
-    _getUserScoreBoard({ user, listType: 'from', today: true }),
+    _getUserScoreBoard({ user, listType: 'to', isToday: true }),
+    _getUserScoreBoard({ user, listType: 'from', isToday: true }),
   ]);
 
   return {

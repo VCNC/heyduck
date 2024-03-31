@@ -1275,16 +1275,16 @@
   var listType = getLocalStorage("listType") || "to";
   var scoreType = getLocalStorage("scoreType") || "inc";
   var isMonthPickerVisible = false;
-  document.querySelector("#toggleMonthPickerButton").addEventListener("click", () => {
-    if (!isMonthPickerVisible) {
-      renderDatePicker();
+  var toggleMonthPicker = () => {
+    if (isMonthPickerVisible) {
+      destroyMonthPicker();
     } else {
-      const monthPicker = document.querySelector(".month-picker");
-      document.querySelector("#month-picker-wrapper").removeChild(monthPicker);
+      renderMonthPicker();
     }
     isMonthPickerVisible = !isMonthPickerVisible;
-  });
-  var renderDatePicker = () => {
+  };
+  document.querySelector("#toggleMonthPickerButton").addEventListener("click", toggleMonthPicker);
+  var renderMonthPicker = () => {
     return new import_air_datepicker.default("#month-picker-wrapper", {
       locale: import_ko.default,
       visible: isMonthPickerVisible,
@@ -1304,6 +1304,15 @@
       }
     });
   };
+  function destroyMonthPicker() {
+    const monthPicker = document.querySelector(".month-picker");
+    document.querySelector("#month-picker-wrapper").removeChild(monthPicker);
+  }
+  document.querySelector("#date_filter__all").addEventListener("click", () => {
+    isMonthPickerVisible = false;
+    destroyMonthPicker();
+    getScoreBoard();
+  });
   var filterSwitch = document.getElementById("switchToFromInput");
   filterSwitch.checked = listType === "to" ? true : false;
   async function fetcher(type, { username, listType: listType2, scoreType: scoreType2, month, year }) {

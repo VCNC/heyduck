@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/animate.css" />
     <link rel="stylesheet" href="css/rain.css" />
-    <link rel="stylesheet" href="css/test.css" />
+    <link rel="stylesheet" href="output/fun.css" />
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
   </head>
   <body>
@@ -31,7 +31,11 @@
     <div id="rain"></div>
 
     <div class="app" id="app">
-      <div id="month-picker" class="'month-picker"></div>
+      <div class="date-filter">
+        <button class="date-filter__button">전체 기간</button>
+        <button class="date-filter__button" id="toggleMonthPickerButton">월간 필터</button>
+      </div>
+      <div id="month-picker-wrapper"></div>
       <div id="users" class="scoreboard"></div>
     </div>
     <script src="output/fun.js"></script>

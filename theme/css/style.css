@@ -435,8 +435,28 @@ h1 {
   }
 }
 
-#month-picker {
+#month-picker-wrapper {
   display: flex;
   justify-content: center;
-  margin: 60px 0;
+}
+
+.month-picker {
+  margin: 30px 0;
+}
+
+.date-filter {
+  display: flex;
+  margin-top: 10px;
+  gap: 10px;
+  justify-content: center;
+}
+
+.date-filter__button {
+  cursor: pointer;
+  width: 100px;
+  height: 40px;
+  background-color: white;
+  border-radius: 4px;
+  border: 1px solid black;
+  box-shadow: 0 7px 14px 0 rgba(50, 50, 93, 0.1), 0 3px 6px 0 rgba(0, 0, 0, 0.07);
 }

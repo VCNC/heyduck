@@ -1274,22 +1274,36 @@
   var burritoHost = window.location.hostname;
   var listType = getLocalStorage("listType") || "to";
   var scoreType = getLocalStorage("scoreType") || "inc";
-  new import_air_datepicker.default("#month-picker", {
-    locale: import_ko.default,
-    view: "months",
-    minView: "months",
-    dateFormat: "MMMM yyyy",
-    onSelect: ({ date }) => {
-      const month = date.getMonth() + 1;
-      const year = date.getFullYear();
-      console.log({ month, year });
-      fetcher("monthlyScore", { listType, scoreType, month, year }).then((response) => {
-        console.log(response);
-        store = response;
-        render();
-      });
+  var isMonthPickerVisible = false;
+  document.querySelector("#toggleMonthPickerButton").addEventListener("click", () => {
+    if (!isMonthPickerVisible) {
+      renderDatePicker();
+    } else {
+      const monthPicker = document.querySelector(".month-picker");
+      document.querySelector("#month-picker-wrapper").removeChild(monthPicker);
     }
+    isMonthPickerVisible = !isMonthPickerVisible;
   });
+  var renderDatePicker = () => {
+    return new import_air_datepicker.default("#month-picker-wrapper", {
+      locale: import_ko.default,
+      visible: isMonthPickerVisible,
+      view: "months",
+      classes: "month-picker",
+      minView: "months",
+      dateFormat: "MMMM yyyy",
+      onSelect: ({ date }) => {
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear();
+        console.log({ month, year });
+        fetcher("monthlyScore", { listType, scoreType, month, year }).then((response) => {
+          console.log(response);
+          store = response;
+          render();
+        });
+      }
+    });
+  };
   var filterSwitch = document.getElementById("switchToFromInput");
   filterSwitch.checked = listType === "to" ? true : false;
   async function fetcher(type, { username, listType: listType2, scoreType: scoreType2, month, year }) {

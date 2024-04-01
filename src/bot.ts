@@ -52,7 +52,7 @@ const notifyUser = (user: string, message: string, messageBlock?: Object[]) => {
 
 const handleBurritos = async (giver: string, channel: string, duckedMessage: string, duckedMessageLink: string, updates: Updates[]) => {
   log.info(updates)
-  const isHoisung = updates.some((value) => { value.reaction === '1hoisung'})
+  const isHoisung = updates.some(update => update.reaction.includes('1hoisung'))
   if (!enableDecrement) {
     const burritos = await BurritoStore.givenBurritosToday(giver, 'from');
     const diff = dailyCap - burritos;

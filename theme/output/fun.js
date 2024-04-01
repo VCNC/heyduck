@@ -1333,7 +1333,7 @@
         return json;
       }
       case "monthlyScore": {
-        const res = await fetch(`/api/monthlyscore/${listType2}/${scoreType2}/${month}/${year}`);
+        const res = await fetch(`/api/scoreboard/${listType2}/${scoreType2}/${month}/${year}`);
         const json = await res.json();
         return json.data;
       }

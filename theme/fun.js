@@ -85,7 +85,7 @@ async function fetcher(type, { username, listType, scoreType, month, year }) {
       return json;
     }
     case 'monthlyScore': {
-      const res = await fetch(`/api/monthlyscore/${listType}/${scoreType}/${month}/${year}`);
+      const res = await fetch(`/api/scoreboard/${listType}/${scoreType}/${month}/${year}`);
       const json = await res.json();
       return json.data;
     }

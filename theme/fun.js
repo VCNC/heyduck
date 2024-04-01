@@ -45,8 +45,8 @@ const renderMonthPicker = () => {
       const year = date.getFullYear();
       console.log({ month, year });
       fetcher('monthlyScore', { listType, scoreType, month, year }).then((response) => {
-        console.log(response);
         store = response;
+        sortUsers();
         render();
       });
     },
@@ -85,7 +85,7 @@ async function fetcher(type, { username, listType, scoreType, month, year }) {
       return json;
     }
     case 'monthlyScore': {
-      const res = await fetch(`/api/scoreboard/${listType}/${scoreType}/${month}/${year}`);
+      const res = await fetch(`/api/monthlyScoreboard/${listType}/${scoreType}/${month}/${year}`);
       const json = await res.json();
       return json.data;
     }

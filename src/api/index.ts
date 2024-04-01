@@ -120,7 +120,7 @@ Route.add({
  */
 Route.add({
   method: 'GET',
-  path: `${apiPath}scoreboard/{listType}/{scoreTypeInput}/{month}/{year}`,
+  path: `${apiPath}monthlyScoreboard/{listType}/{scoreTypeInput}/{month}/{year}`,
   handler: async (request: any, res: any) => {
     try {
       const { listType, scoreTypeInput, month, year } = request.params;

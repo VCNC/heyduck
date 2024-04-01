@@ -1297,8 +1297,8 @@
         const year = date.getFullYear();
         console.log({ month, year });
         fetcher("monthlyScore", { listType, scoreType, month, year }).then((response) => {
-          console.log(response);
           store = response;
+          sortUsers();
           render();
         });
       }
@@ -1333,7 +1333,7 @@
         return json;
       }
       case "monthlyScore": {
-        const res = await fetch(`/api/scoreboard/${listType2}/${scoreType2}/${month}/${year}`);
+        const res = await fetch(`/api/monthlyScoreboard/${listType2}/${scoreType2}/${month}/${year}`);
         const json = await res.json();
         return json.data;
       }

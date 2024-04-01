@@ -90,20 +90,20 @@ class Wbc {
       limit: 1,
     });
 
-    log.info(res.messages[0])
+    log.info(res.messages[0]);
 
     return res.messages[0];
   }
 
   async fetchMessageLink(channelId: string, ts: number) {
     log.info('Fetching messageLink');
-    log.info(`channelid ${channelId} ts ${ts}`)
+    log.info(`channelid ${channelId} ts ${ts}`);
     const res = await this.wbc.chat.getPermalink({
       channel: channelId,
       message_ts: ts,
     });
 
-    return res.permalink
+    return res.permalink;
   }
 }
 

@@ -105,6 +105,18 @@ class Wbc {
 
     return res.permalink
   }
+
+  async fetchUsersOfGroup(group: string) {
+    log.info('Fetching group');
+    log.info(`group id ${group}`)
+    const res = await this.wbc.usergroups.users.list({
+      usergroup: group,
+    }); 
+    const users = res.users
+    log.info(`user id ${users.join(',')}`)
+
+    return users
+  }
 }
 
 export default new Wbc();

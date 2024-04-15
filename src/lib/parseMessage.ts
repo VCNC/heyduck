@@ -1,6 +1,21 @@
 import * as log from 'bog';
+import Wbc from '../slack/Wbc';
 
 const usernameRegex = /(<@[A-Z0-9]{2,}>)/g;
+const usergroupRegex = /<!subteam\^([A-Z0-9]{2,})\|@[A-Z0-9]{2,}>/g;
+
+/**
+ * @param { string } text from slack message
+ * @returns array<string>, only unique values
+ */
+async function getUserNames(text: string): Promise<string[]> {
+  const rawUsers: string[] = parseUsernames(text);
+  const groupUsers: string[] = await parseGroupUsers(text);
+
+  const users = rawUsers.concat(groupUsers).filter((v, i, a) => a.indexOf(v) === i)
+
+  return users
+}
 
 /**
  * @param { string } text from slack message
@@ -18,6 +33,25 @@ function parseUsernames(text: string): string[] {
 }
 
 /**
+ * @param { string } text from slack message
+ * @returns array<string>, only unique values
+ */
+async function parseGroupUsers(text: string): Promise<string[]> {
+  const regexp = new RegExp(usergroupRegex)
+  let match;
+  const groupsRaw = []
+  // Regex to get all groups from message
+  while ((match = regexp.exec(text)) !== null) {
+    groupsRaw.push(match[1])
+  }
+  // replace unwanted chars
+  const users = (await Promise.all(groupsRaw.map(async (x) => await Wbc.fetchUsersOfGroup(x)))).flat();
+  // Remove duplicated values
+  const unique: string[] = users.filter((v, i, a) => a.indexOf(v) === i);
+  return unique.length ? unique : [];
+}
+
+/**
  * @param { Obejct } msg slackmessage
  * @param { array<object> } emojis emojis that we want to use. Comes from env
  * @return { object } { giver: string, updates:array<object> }
@@ -26,15 +60,14 @@ function parseUsernames(text: string): string[] {
  *  - [ { username: 'USER2', type: 'inc' },
  *    { username: 'USER2', type: 'dec' } ]
  */
-function parseMessage(msg, emojis) {
+async function parseMessage(msg, emojis) {
   // Array containg data of whom to give / remove points from
   const updates = [];
 
   // Array with "allowed" emojis mentioned in slackmessage
   const emojiHits = [];
 
-  // Get usernames from slack message
-  const users: string[] = parseUsernames(msg.text);
+  const users = await getUserNames(msg.text)
   if (!users.length) return false;
 
   // Match and push allowed emojis to emojiHits
@@ -71,12 +104,11 @@ function parseMessage(msg, emojis) {
  *  - [ { username: 'USER2', type: 'inc' },
  *    { username: 'USER2', type: 'dec' } ]
  */
-function parseReactedMessage(reaction, reactedMsg, emojis) {
+async function parseReactedMessage(reaction, reactedMsg, emojis) {
   // Array containg data of whom to give / remove points from
   const updates = [];
 
-  // Get usernames from reacted slack message
-  const users: string[] = parseUsernames(reactedMsg.text);
+  const users = await getUserNames(reactedMsg.text)
 
   const sender = reactedMsg.user ?? reaction.item_user;
   // If no one is mentioned on the original slack message, the sender receives ducks

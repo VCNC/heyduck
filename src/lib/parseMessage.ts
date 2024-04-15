@@ -42,6 +42,7 @@ async function parseGroupUsers(text: string): Promise<string[]> {
   const groupsRaw = []
   // Regex to get all groups from message
   while ((match = regexp.exec(text)) !== null) {
+    log.info(match)
     groupsRaw.push(match[1])
   }
   log.info('groupsRaw: ')

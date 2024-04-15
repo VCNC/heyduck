@@ -141,7 +141,7 @@ const start = () => {
       if (validBotMention(event, LocalStore.botUserID())) {
         // Geather data and send back to user
       } else {
-        const result = parseMessage(event, emojis);
+        const result = await parseMessage(event, emojis);
         if (result) {
           const { giver, updates } = result;
           if (updates.length) {
@@ -158,7 +158,7 @@ const start = () => {
       const channelId = event.item.channel;
       const originalContent = await Wbc.fetchReactedMessage(channelId, event.item.ts);
       const messageLink = await Wbc.fetchMessageLink(channelId, event.item.ts)
-      const { updates } = parseReactedMessage(event, originalContent, emojis);
+      const { updates } = await parseReactedMessage(event, originalContent, emojis);
       if (updates.length) {
         await handleBurritos(event.user, channelId, originalContent.text, messageLink,updates);
       }

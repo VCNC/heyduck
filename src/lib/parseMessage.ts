@@ -44,6 +44,8 @@ async function parseGroupUsers(text: string): Promise<string[]> {
   while ((match = regexp.exec(text)) !== null) {
     groupsRaw.push(match[1])
   }
+  log.info('groupsRaw: ')
+  log.info(groupsRaw)
   // replace unwanted chars
   const users = (await Promise.all(groupsRaw.map(async (x) => await Wbc.fetchUsersOfGroup(x)))).flat();
   // Remove duplicated values

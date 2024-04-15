@@ -2,7 +2,7 @@ import * as log from 'bog';
 import Wbc from '../slack/Wbc';
 
 const usernameRegex = /(<@[A-Z0-9]{2,}>)/g;
-const usergroupRegex = /<!subteam\^([A-Z0-9]{2,})\|@[A-Z0-9]{2,}>/g;
+const usergroupRegex = /<!subteam\^([A-Z0-9]{2,})\|@.*>/g;
 
 /**
  * @param { string } text from slack message

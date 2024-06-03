@@ -105,6 +105,14 @@ class Wbc {
 
     return res.permalink;
   }
+
+  async isChannelPrivate(channelId: string): Promise<Boolean> {
+    const res = await this.wbc.conversations.info({
+      channel: channelId,
+    });
+
+    return res.channel.is_channel && res.channel.is_private;
+  }
 }
 
 export default new Wbc();

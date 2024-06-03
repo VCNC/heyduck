@@ -51,6 +51,11 @@ const notifyUser = (user: string, message: string, messageBlock?: Object[]) => {
 
 const handleBurritos = async (giver: string, channel: string, duckedMessage: string, duckedMessageLink: string, updates: Updates[]) => {
   log.info(updates);
+  const isChannelPrivate = await Wbc.isChannelPrivate(channel);
+  if (isChannelPrivate) {
+    notifyUser(giver, '공개 채널에서만 :duck:을 줄 수 있습니다.');
+    return false;
+  }
   if (!enableDecrement) {
     const burritos = await BurritoStore.givenBurritosToday(giver, 'from');
     const diff = dailyCap - burritos;

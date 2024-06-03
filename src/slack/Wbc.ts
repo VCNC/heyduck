@@ -111,7 +111,7 @@ class Wbc {
       channel: channelId,
     });
 
-    return res.channel.is_channel && res.channel.is_private;
+    return res.channel.is_private;
   }
 }
 

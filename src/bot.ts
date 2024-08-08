@@ -62,7 +62,7 @@ const handleBurritos = async (giver: string, channel: string, duckedMessage: str
   log.info(updates);
 
   if (updates.length === 0) {
-    notifyUser(giver, `나 자신에게 :duck:을 줄 수 없습니다. 메세지를 전송한 사람에게 주고싶다면 새로 태그하고 주는 것은 어떨까요?`, [
+    notifyUser(giver, `<@${giver}>님이`, [
       {
         type: 'section',
         text: {

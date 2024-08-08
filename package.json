@@ -5,6 +5,7 @@
   "scripts": {
     "start": "NODE_ENV=production ts-node ./src/server.ts",
     "dev": "NODE_ENV=development nodemon --ignore '/test/*.ts' --watch '*.ts' --exec 'ts-node' ./src/server.ts",
+    "build:front": "esbuild theme/fun.js --bundle --watch --outfile=theme/output/fun.js",
     "mockDB": "ts-node ./test/lib/mockDatabase.ts",
     "test": "NODE_ENV=testing mocha -r ts-node/register test/*-test.ts --exit",
     "lint": "eslint --ext .ts ./src/ || exit 0",
@@ -14,6 +15,7 @@
   "dependencies": {
     "@slack/rtm-api": "^6.1.0",
     "@slack/web-api": "^6.8.1",
+    "air-datepicker": "^3.5.0",
     "bog": "^1.0.2",
     "dotenv": "^16.0.3",
     "mongodb": "^5.5.0",
@@ -31,6 +33,7 @@
     "chai": "^4.3.7",
     "chai-as-promised": "^7.1.1",
     "dirty-chai": "^2.0.1",
+    "esbuild": "0.20.2",
     "eslint": "^8.40.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.8.0",

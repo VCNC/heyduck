@@ -5,7 +5,7 @@ import { parseMessage, parseReactedMessage } from './lib/parseMessage';
 import { validBotMention, validMessage, validReaction } from './lib/validator';
 import Rtm from './slack/Rtm';
 import Wbc from './slack/Wbc';
-import log from 'bog'
+import log from 'bog';
 
 const { enableDecrement, dailyCap, dailyDecCap, emojiInc, emojiDec, disableEmojiDec } = config.slack;
 
@@ -19,7 +19,7 @@ interface Updates {
   type: string;
 }
 const emojis: Array<Emojis> = [];
-const dashBoardUrl = 'http://ec2-43-201-180-152.ap-northeast-2.compute.amazonaws.com:3333/'
+const dashBoardUrl = 'http://ec2-43-201-180-152.ap-northeast-2.compute.amazonaws.com:3333/';
 
 const incEmojis = emojiInc.split(',').map((emoji) => emoji.trim());
 incEmojis.forEach((emoji: string) => emojis.push({ type: 'inc', emoji }));
@@ -50,12 +50,12 @@ const notifyUser = (user: string, message: string, messageBlock?: Object[]) => {
 };
 
 const handleBurritos = async (giver: string, channel: string, duckedMessage: string, duckedMessageLink: string, updates: Updates[]) => {
-  const giverIdx = updates.findIndex( (update) => update.username === giver )
+  const giverIdx = updates.findIndex( (update) => update.username === giver );
   if (giverIdx > -1) {
     updates.splice(giverIdx, 1);
   }
 
-  log.info(updates)
+  log.info(updates);
 
   if (updates.length === 0) {
     notifyUser(giver, `나 자신에게 :duck:을 줄 수 없습니다. 메세지를 전송한 사람에게 주고싶다면 새로 태그하고 주는 것은 어떨까요?`, [
@@ -67,6 +67,13 @@ const handleBurritos = async (giver: string, channel: string, duckedMessage: str
         },
       },
     ]);
+    return false;
+  }
+
+  const isChannelPrivate = await Wbc.isChannelPrivate(channel);
+  if (isChannelPrivate) {
+    notifyUser(giver, '공개 채널에서만 :duck:을 줄 수 있습니다.');
+    return false;
   }
 
   if (!enableDecrement) {
@@ -110,8 +117,8 @@ const handleBurritos = async (giver: string, channel: string, duckedMessage: str
   const leftOverDucks = dailyCap - givenDucks;
   const receivers = [...new Set(updates.map((it) => it.username))];
   const eachGivenDucks = Math.ceil(updates.length / receivers.length);
-  const firstLineContent = duckedMessage.split('\n')[0] ?? ""
-  const trailingDots = duckedMessage.split('\n').length > 1 ? "..." : "" 
+  const firstLineContent = duckedMessage.split('\n')[0] ?? '';
+  const trailingDots = duckedMessage.split('\n').length > 1 ? '...' : '';
   notifyUser(
     giver,
     `${receivers
@@ -163,7 +170,7 @@ const start = () => {
         if (result) {
           const { giver, updates } = result;
           if (updates.length) {
-            const messageLink = await Wbc.fetchMessageLink(event.channel, event.event_ts)
+            const messageLink = await Wbc.fetchMessageLink(event.channel, event.event_ts);
             await handleBurritos(giver, event.channel, event.text, messageLink, updates);
           }
         }
@@ -175,10 +182,10 @@ const start = () => {
     if (validReaction(event, emojis)) {
       const channelId = event.item.channel;
       const originalContent = await Wbc.fetchReactedMessage(channelId, event.item.ts);
-      const messageLink = await Wbc.fetchMessageLink(channelId, event.item.ts)
+      const messageLink = await Wbc.fetchMessageLink(channelId, event.item.ts);
       const { updates } = parseReactedMessage(event, originalContent, emojis);
       if (updates.length) {
-        await handleBurritos(event.user, channelId, originalContent.text, messageLink,updates);
+        await handleBurritos(event.user, channelId, originalContent.text, messageLink, updates);
       }
     }
   });

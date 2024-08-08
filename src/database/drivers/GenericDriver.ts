@@ -123,7 +123,7 @@ class GenericDriver extends Store implements Driver {
     }
     const selected = data
       .filter((item: any) => {
-        if (item.given_at.getMonth() === month && item.given_at.getFullYear() === year) {
+        if (item.given_at.getMonth() + 1 == month && item.given_at.getFullYear() == year) {
           if (user) {
             if (item[listType] === user) return item;
           } else {

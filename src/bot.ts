@@ -51,6 +51,10 @@ const notifyUser = (user: string, message: string, messageBlock?: Object[]) => {
 
 const handleBurritos = async (giver: string, channel: string, duckedMessage: string, duckedMessageLink: string, updates: Updates[]) => {
   const giverIdx = updates.findIndex( (update) => update.username === giver );
+
+  log.info(JSON.stringify(updates));
+  log.info(giverIdx);
+
   if (giverIdx > -1) {
     updates.splice(giverIdx, 1);
   }

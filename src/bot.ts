@@ -70,6 +70,13 @@ const handleBurritos = async (giver: string, channel: string, duckedMessage: str
           text: `<${duckedMessageLink}|내가 덕 주려고 했던 메세지>`,
         },
       },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `<${duckedMessageLink}|내가 덕 주려고 했던 메세지>`,
+        },
+      },
     ]);
     return false;
   }

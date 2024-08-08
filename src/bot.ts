@@ -50,11 +50,12 @@ const notifyUser = (user: string, message: string, messageBlock?: Object[]) => {
 };
 
 const handleBurritos = async (giver: string, channel: string, duckedMessage: string, duckedMessageLink: string, updates: Updates[]) => {
-  log.info(updates)
   const giverIdx = updates.findIndex( (update) => update.username === giver )
   if (giverIdx > -1) {
     updates.splice(giverIdx, 1);
   }
+
+  log.info(updates)
 
   if (updates.length === 0) {
     notifyUser(giver, `나 자신에게 :duck:을 줄 수 없습니다. 메세지를 전송한 사람에게 주고싶다면 새로 태그하고 주는 것은 어떨까요?`, [

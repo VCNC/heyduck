@@ -62,22 +62,7 @@ const handleBurritos = async (giver: string, channel: string, duckedMessage: str
   log.info(updates);
 
   if (updates.length === 0) {
-    notifyUser(giver, `<@${giver}>님이 <#${channel}>에서 1개의 :duck:을 주었습니다.`, [
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: `<${duckedMessageLink}|내가 덕 받은 메세지 링크>`,
-        },
-      },
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: `<${dashBoardUrl}|헤이덕 대시보드>에서 내가 받은 :duck: 수를 확인해보세요!`,
-        },
-      },
-    ]);
+    notifyUser(giver, `<@${giver}>님이 <#${channel}>에서 1개의 :duck:을 주었습니다. <${duckedMessageLink}|내가 덕 받은 메세지 링크>`);
     notifyUser(giver, "나 자신에게 :duck:을 줄 수 없습니다. 메세지를 전송한 사람에게 주고싶다면 새로 태그하고 주는 것은 어떨까요?", [
       {
         type: 'section',

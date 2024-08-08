@@ -84,18 +84,10 @@ function parseReactedMessage(reaction, reactedMsg, emojis) {
     users.push(sender);
   }
 
-  // Filter self reaction
-  const filteredUsers = users.filter((u) => u !== reaction.user);
-
-  log.info('reactedMsg: ' + reactedMsg.text);
-  log.info('users: ' + users.join(','));
-  log.info('sender: ' + sender);
-  log.info('final users: ' + filteredUsers.join(','));
-
   const type = emojis.filter((e: any) => e.emoji == `:${reaction.reaction}:`)[0].type;
 
   // Give each user a update
-  filteredUsers.forEach((u) => updates.push({ username: u, type: type }));
+  users.forEach((u) => updates.push({ username: u, type: type }));
 
   return {
     updates,

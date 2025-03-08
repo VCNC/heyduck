@@ -39,6 +39,7 @@ const config = {
     slack: {
       bot_name: process.env.BOT_NAME || 'heyburrito',
       api_token: mustHave('SLACK_API_TOKEN'),
+      app_token: mustHave('SLACK_APP_TOKEN'),
       emojiInc: fixEmoji(process.env.SLACK_EMOJI_INC || ':burrito:'),
       emojiDec: fixEmoji(process.env.SLACK_EMOJI_DEC || ':rottenburrito:'),
       disableEmojiDec: getBool(process.env.DISABLE_EMOJI_DEC, false),
@@ -81,6 +82,7 @@ const config = {
     slack: {
       bot_name: process.env.BOT_NAME || 'heyburrito',
       api_token: mustHave('SLACK_API_TOKEN'),
+      app_token: mustHave('SLACK_APP_TOKEN'),
       emojiInc: fixEmoji(process.env.SLACK_EMOJI_INC || ':burrito:'),
       emojiDec: fixEmoji(process.env.SLACK_EMOJI_DEC || ':rottenburrito:'),
       disableEmojiDec: getBool(process.env.DISABLE_EMOJI_DEC, false),
@@ -122,6 +124,7 @@ const config = {
     slack: {
       bot_name: process.env.BOT_NAME || 'heyburrito',
       api_token: process.env.SLACK_API_TOKEN || '',
+      app_token: process.env.SLACK_APP_TOKEN || '',
       emojiInc: fixEmoji(process.env.SLACK_EMOJI_INC || ':burrito:'),
       emojiDec: fixEmoji(process.env.SLACK_EMOJI_DEC || ':rottenburrito:'),
       disableEmojiDec: getBool(process.env.DISABLE_EMOJI_DEC, false),

@@ -1,5 +1,6 @@
 import * as log from 'bog';
 import { EventEmitter } from 'events';
+import { App } from '@slack/bolt';
 
 interface SlackItem {
   type: string;
@@ -23,17 +24,18 @@ interface SlackEvent {
   item?: SlackItem;
 }
 
-class Rtm extends EventEmitter {
-  rtm: any;
+class Event extends EventEmitter {
+  client: any;
 
-  register(rtm: any) {
-    this.rtm = rtm;
+  register(client: any) {
+    this.client = client;
     this.listener();
   }
 
   listener(): void {
     log.info('Listening on slack messages and reactions');
-    this.rtm.on('message', (event: SlackEvent) => {
+    this.client.event('message', ({ event }: { event: SlackEvent }) => {
+      log.info(JSON.stringify(event));
       if (!!event.subtype && event.subtype === 'channel_join') {
         log.info('Joined channel', event.channel);
       }
@@ -41,7 +43,8 @@ class Rtm extends EventEmitter {
         this.emit('slackMessage', event);
       }
     });
-    this.rtm.on('reaction_added', (event: SlackEvent) => {
+    this.client.event('reaction_added', ({ event }: { event: SlackEvent }) => {
+      log.info(JSON.stringify(event));
       if (event.type === 'reaction_added') {
         this.emit('slackReaction', event);
       }
@@ -49,4 +52,4 @@ class Rtm extends EventEmitter {
   }
 }
 
-export default new Rtm();
+export default new Event();

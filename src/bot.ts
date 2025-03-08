@@ -3,7 +3,7 @@ import BurritoStore from './store/BurritoStore';
 import LocalStore from './store/LocalStore';
 import { parseMessage, parseReactedMessage } from './lib/parseMessage';
 import { validBotMention, validMessage, validReaction } from './lib/validator';
-import Rtm from './slack/Rtm';
+import Event from './slack/Event';
 import Wbc from './slack/Wbc';
 import log from 'bog';
 
@@ -41,7 +41,7 @@ const giveBurritos = async (giver: string, updates: Updates[]) => {
   }, Promise.resolve());
 };
 
-const notifyUser = (user: string, message: string, messageBlock?: Object[]) => {
+const notifyUser = (user: string, message: string, messageBlock?: object[]) => {
   if (messageBlock != null) {
     Wbc.sendDMBlock(user, message, messageBlock);
   } else {
@@ -50,7 +50,7 @@ const notifyUser = (user: string, message: string, messageBlock?: Object[]) => {
 };
 
 const handleBurritos = async (giver: string, channel: string, duckedMessage: string, duckedMessageLink: string, updates: Updates[]) => {
-  const giverIdx = updates.findIndex( (update) => update.username === giver );
+  const giverIdx = updates.findIndex((update) => update.username === giver);
   if (giverIdx > -1) {
     updates.splice(giverIdx, 1);
   }
@@ -58,7 +58,10 @@ const handleBurritos = async (giver: string, channel: string, duckedMessage: str
   log.info(updates);
 
   if (updates.length === 0) {
-    notifyUser(giver, `나 자신에게 :duck:을 줄 수 없습니다. 메세지를 전송한 사람에게 주고싶다면 새로 태그하고 주는 것은 어떨까요?\n\n<${duckedMessageLink}|내가 덕 주려고 했던 메세지>`);
+    notifyUser(
+      giver,
+      `나 자신에게 :duck:을 줄 수 없습니다. 메세지를 전송한 사람에게 주고싶다면 새로 태그하고 주는 것은 어떨까요?\n\n<${duckedMessageLink}|내가 덕 주려고 했던 메세지>`,
+    );
     return false;
   }
 
@@ -153,7 +156,7 @@ const handleBurritos = async (giver: string, channel: string, duckedMessage: str
 };
 
 const start = () => {
-  Rtm.on('slackMessage', async (event: any) => {
+  Event.on('slackMessage', async (event: any) => {
     if (validMessage(event, emojis, LocalStore.getAllBots())) {
       if (validBotMention(event, LocalStore.botUserID())) {
         // Geather data and send back to user
@@ -170,7 +173,7 @@ const start = () => {
     }
   });
 
-  Rtm.on('slackReaction', async (event: any) => {
+  Event.on('slackReaction', async (event: any) => {
     if (validReaction(event, emojis)) {
       const channelId = event.item.channel;
       const originalContent = await Wbc.fetchReactedMessage(channelId, event.item.ts);

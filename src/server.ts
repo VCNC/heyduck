@@ -10,7 +10,7 @@ import database from './database';
 import config from './config';
 import { start } from './bot';
 import slack from './slack';
-import RTMHandler from './slack/Rtm';
+import EventHandler from './slack/Event';
 import WBCHandler from './slack/Wbc';
 import APIHandler from './api';
 import WEBHandler from './web';
@@ -29,10 +29,10 @@ init().then(() => {
   BurritoStore.setDatabase(database);
 
   // Set and start slack services
-  const { rtm, wbc } = slack;
+  const { event, wbc } = slack;
 
-  rtm.start();
-  RTMHandler.register(rtm);
+  event.start();
+  EventHandler.register(event);
   WBCHandler.register(wbc);
 
   // Start bot instance

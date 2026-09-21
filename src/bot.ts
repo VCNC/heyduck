@@ -7,7 +7,7 @@ import Event from './slack/Event';
 import Wbc from './slack/Wbc';
 import log from 'bog';
 
-const { enableDecrement, dailyCap, dailyDecCap, emojiInc, emojiDec, disableEmojiDec } = config.slack;
+const { enableDecrement, dailyCap, dailyDecCap, emojiInc, emojiDec, disableEmojiDec, dashboardUrl } = config.slack;
 
 interface Emojis {
   type: string;
@@ -19,7 +19,6 @@ interface Updates {
   type: string;
 }
 const emojis: Array<Emojis> = [];
-const dashBoardUrl = 'http://ec2-43-201-180-152.ap-northeast-2.compute.amazonaws.com:3333/';
 
 const incEmojis = emojiInc.split(',').map((emoji) => emoji.trim());
 incEmojis.forEach((emoji: string) => emojis.push({ type: 'inc', emoji }));
@@ -147,7 +146,7 @@ const handleBurritos = async (giver: string, channel: string, duckedMessage: str
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `<${dashBoardUrl}|헤이덕 대시보드>에서 내가 받은 :duck: 수를 확인해보세요!`,
+          text: `<${dashboardUrl}|헤이덕 대시보드>에서 내가 받은 :duck: 수를 확인해보세요!`,
         },
       },
     ]);

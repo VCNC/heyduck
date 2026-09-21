@@ -46,6 +46,7 @@ const config = {
       dailyCap: getNum(process.env.SLACK_DAILY_CAP, 5),
       dailyDecCap: getNum(process.env.SLACK_DAILY_DEC_CAP, 5),
       enableDecrement: getBool(process.env.ENABLE_DECREMENT, true),
+      dashboardUrl: process.env.DASHBOARD_URL || 'https://heyduck.staging.tadatada.in/',
     },
     http: {
       http_port: process.env.PORT || process.env.HTTP_PORT || 3333,
@@ -89,6 +90,7 @@ const config = {
       dailyCap: getNum(process.env.SLACK_DAILY_CAP, 5000),
       dailyDecCap: getNum(process.env.SLACK_DAILY_DEC_CAP, 5000),
       enableDecrement: getBool(process.env.ENABLE_DECREMENT, true),
+      dashboardUrl: process.env.DASHBOARD_URL || 'https://heyduck.staging.tadatada.in/',
     },
     http: {
       http_port: getNum(process.env.HTTP_PORT, 3333),
@@ -131,6 +133,7 @@ const config = {
       dailyCap: getNum(process.env.SLACK_DAILY_CAP, 5000),
       dailyDecCap: getNum(process.env.SLACK_DAILY_DEC_CAP, 5000),
       enableDecrement: getBool(process.env.ENABLE_DECREMENT, true),
+      dashboardUrl: process.env.DASHBOARD_URL || 'https://heyduck.staging.tadatada.in/',
     },
     http: {
       http_port: process.env.HTTP_PORT || 3333,

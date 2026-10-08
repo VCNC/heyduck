@@ -1,0 +1,13 @@
+# 사내 툴 플랫폼 CI. main/master push 시 ARC runner(사내 EKS)가 arm64 빌드 → ECR tools/heyduck.
+# 배포는 tada-internal-infra 의 tools/heyduck/values.yaml image 를 출력된 태그로 bump.
+name: ci
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  ci:
+    uses: VCNC/tada-internal-infra/.github/workflows/ci-build.yaml@main
+    with:
+      tool: heyduck
